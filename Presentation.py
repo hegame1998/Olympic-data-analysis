@@ -1,6 +1,3 @@
-pip install seaborn
-pip install streamlit
-
 import pandas as pd
 import numpy as np
 import seaborn as sns
