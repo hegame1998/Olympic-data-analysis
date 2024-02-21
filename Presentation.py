@@ -1,19 +1,13 @@
-import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
+import streamlit as st
 
 
 st.header("Presentation of Final Project")
 st.subheader("Programming & Database")
 
 
-val_count  = df['column_name'].value_counts()
-fig = plt.figure(figsize=(10,5))
-sns.barplot(val_count.index, val_count.values, alpha=0.8)
-fig.title('Some title')
-fig.ylabel('y label', fontsize=12)
-fig.xlabel('x label', fontsize=12)
-
-
-# Add figure in streamlit app
-st.pyplot(fig)
+athlete_df = pd.read_csv('https://raw.githubusercontent.com/MaH1996SdN/programming_project/master/athlete_events.csv')
+st.write("The raw data of athlete of olympic:")
+st.write(athlete_df)
