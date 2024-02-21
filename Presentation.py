@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-pip install git+https://github.com/mwaskom/seaborn.git#egg=seaborn
+pip install seaborn
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
