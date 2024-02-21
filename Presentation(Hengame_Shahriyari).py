@@ -7,7 +7,7 @@
       "collapsed_sections": [
         "Gaq6YrEN7DWb"
       ],
-      "authorship_tag": "ABX9TyOjcLD2SqkH85gd1s4SX0Um",
+      "authorship_tag": "ABX9TyPhd/5bslMXSIW5yUdKStNN",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -51,7 +51,8 @@
         "import numpy as np\n",
         "import seaborn as sns\n",
         "import matplotlib.pyplot as plt\n",
-        "import plotly.graph_objects as go"
+        "import plotly.graph_objects as go\n",
+        "import streamlit as st"
       ]
     },
     {
