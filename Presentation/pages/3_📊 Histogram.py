@@ -3,6 +3,7 @@ import numpy as np
 import seaborn as sns
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
+import matplotlib.pyplot as plt
 import streamlit as st
 
 
@@ -12,7 +13,7 @@ st.set_page_config(
     )
 
 st.subheader("📊 Histogram")
-st.text('Base on the feature of tab you can see the histogram of that value before and after filling of null cells.')
+st.text('Base on your choose you can see the plot below.')
 
 
 # datasets
@@ -43,15 +44,15 @@ athlete5_df = athlete_df['Weight']
 athlete6_df = athlete_df['Weight'].fillna(athlete_df['Weight'].mean())
 
 # Create tabs
-tabs = ["Age", "Height", "Weight"]
+tabs = ["Age", "Height", "Weight", "Sport"]
 selected_tab = st.selectbox("Select Dataset", tabs)
 
 # Display selected tab
 if selected_tab == "Age":
-    st.write("Histogram based on Age")
+    st.write("Histogram based on Age before the fill null cell and after it:")
     col1, col2 = st.columns(2)
     with col1:
-        st.text("Before fillna")
+        st.text("Before fill null cells")
         hist1, edges1 = np.histogram(athlete1_df.dropna(), bins=20)
         hist_df1 = pd.DataFrame({'Age': hist1, 'left': edges1[:-1], 'right': edges1[1:]})
         source1 = ColumnDataSource(hist_df1)
@@ -60,7 +61,7 @@ if selected_tab == "Age":
         st.bokeh_chart(p1, use_container_width=True)
     
     with col2:
-        st.text("After fillna")
+        st.text("After fill null cells")
         hist2, edges2 = np.histogram(athlete2_df.dropna(), bins=20)
         hist_df2 = pd.DataFrame({'Age': hist2, 'left': edges2[:-1], 'right': edges2[1:]})
         source2 = ColumnDataSource(hist_df2)
@@ -69,10 +70,10 @@ if selected_tab == "Age":
         st.bokeh_chart(p2, use_container_width=True)
 
 elif selected_tab == "Height":
-    st.write("Histogram based on Height")
+    st.write("Histogram based on Height before the fill null cell and after it:")
     col1, col2 = st.columns(2)
     with col1:
-        st.text("Before fillna")
+        st.text("Before fill null cells")
         hist3, edges3 = np.histogram(athlete3_df.dropna(), bins=20)
         hist_df3 = pd.DataFrame({'Height': hist3, 'left': edges3[:-1], 'right': edges3[1:]})
         source3 = ColumnDataSource(hist_df3)
@@ -81,7 +82,7 @@ elif selected_tab == "Height":
         st.bokeh_chart(p3, use_container_width=True)
     
     with col2:
-        st.text("After fillna")
+        st.text("After fill null cells")
         hist4, edges4 = np.histogram(athlete4_df.dropna(), bins=20)
         hist_df4 = pd.DataFrame({'Height': hist4, 'left': edges4[:-1], 'right': edges4[1:]})
         source4 = ColumnDataSource(hist_df4)
@@ -89,11 +90,11 @@ elif selected_tab == "Height":
         p4.quad(bottom=0, top='Height', left='left', right='right', source=source4, fill_color='green', line_color='white', alpha=0.5)
         st.bokeh_chart(p4, use_container_width=True)
 
-else:
-    st.write("Histogram based on Weight")
+elif selected_tab == "Weight":
+    st.write("Histogram based on Weight before the fill null cell and after it:")
     col1, col2 = st.columns(2)
     with col1:
-        st.text("Before fillna")
+        st.text("Before fill null cells")
         hist5, edges5 = np.histogram(athlete5_df.dropna(), bins=20)
         hist_df5 = pd.DataFrame({'Weight': hist5, 'left': edges5[:-1], 'right': edges5[1:]})
         source5 = ColumnDataSource(hist_df5)
@@ -102,10 +103,33 @@ else:
         st.bokeh_chart(p5, use_container_width=True)
     
     with col2:
-        st.text("After fillna")
+        st.text("After fill null cells")
         hist6, edges6 = np.histogram(athlete6_df.dropna(), bins=20)
         hist_df6 = pd.DataFrame({'Weight': hist6, 'left': edges6[:-1], 'right': edges6[1:]})
         source6 = ColumnDataSource(hist_df6)
         p6 = figure(title='Histogram of Weight (after fillna)', x_axis_label='Weight', y_axis_label='Frequency')
         p6.quad(bottom=0, top='Weight', left='left', right='right', source=source6, fill_color='green', line_color='white', alpha=0.5)
         st.bokeh_chart(p6, use_container_width=True)
+
+elif selected_tab == "Sport":
+    st.write("Histogram based on athletes who win gold medal that over 50 base on sport:")
+    # Filter athletes older than 50
+    GoldMedal = athlete_df.loc[athlete_df['Medal'] == 1]
+    filtered_df = GoldMedal[GoldMedal['Age'] > 50]
+    sport_counts = filtered_df['Sport'].value_counts()
+    p = figure(
+        title='Athletes Over 50 by Sport',
+        x_axis_label='Sport',
+        y_axis_label='Count',
+        x_range=list(sport_counts.index),  # Set x-axis range to sports
+        plot_height=400, 
+        plot_width=700
+    )
+    p.vbar(
+        x=list(sport_counts.index), 
+        top=sport_counts.values, 
+        width=0.5,
+        fill_color='green'
+    )
+    p.xaxis.major_label_orientation = "vertical"
+    st.bokeh_chart(p, use_container_width=True)
