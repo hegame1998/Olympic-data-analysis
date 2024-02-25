@@ -1,54 +1,23 @@
-import pandas as pd
-import numpy as np
-import seaborn as sns
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource
-import matplotlib.pyplot as plt
-import streamlit as st
-
+from loadData import pd, np, sns, plt, st, athlete_df, athlete1_df, athlete2_df, athlete3_df, athlete4_df, athlete5_df, athlete6_df
 
 st.set_page_config(
         page_title="📊 Histogram",
         layout="wide",
     )
-
 st.subheader("📊 Histogram")
 st.text('Base on your choose you can see the plot below.')
 
 
-# datasets
-athlete_df = pd.read_csv('https://raw.githubusercontent.com/MaH1996SdN/programming_project/master/athlete_events.csv')
-regions_df = pd.read_csv('https://raw.githubusercontent.com/MaH1996SdN/programming_project/master/noc_regions.csv')
-
-# drop & merge
-regions_df.drop('notes', axis=1, inplace=True)
-athlete_df=pd.merge(athlete_df, regions_df, on='NOC', how='left')
-athlete_df.rename(columns = {'region':'Country'}, inplace = True)
-athlete_df.drop(['ID','Team', 'NOC', 'Games', 'City'], axis=1, inplace=True)
-
-# cleaning 
-athlete_df['Medal'].fillna('non-Medal', inplace = True)
-athlete_df.Medal.replace({'Gold':1, 'Silver':2, 'Bronze':3, 'non-Medal':0}, inplace=True)
-athlete_df['Country'].fillna('Unknown-Country', inplace = True)
-
-
-
-# Data for histograms
-athlete1_df = athlete_df['Age']
-athlete2_df = athlete_df['Age'].fillna(athlete_df['Age'].mean())
-
-athlete3_df = athlete_df['Height']
-athlete4_df = athlete_df['Height'].fillna(athlete_df['Height'].mean())
-
-athlete5_df = athlete_df['Weight']
-athlete6_df = athlete_df['Weight'].fillna(athlete_df['Weight'].mean())
-
 # Create tabs
-tabs = ["Age", "Height", "Weight", "Sport"]
+tabs = ["Age of athletes before & after filling null cell", "Height of athletes before & after filling null cell", "Weight of athletes before & after filling null cell", 
+        "Sports whose athletes win gold medal & over 50 years old", "Top 10 countries by number of medals", 
+        "Top 15 countries by number of women medalist", "Gold Medals of Italy"]
 selected_tab = st.selectbox("Select Dataset", tabs)
 
 # Display selected tab
-if selected_tab == "Age":
+if selected_tab == "Age of athletes before & after filling null cell":
     st.write("Histogram based on Age before the fill null cell and after it:")
     col1, col2 = st.columns(2)
     with col1:
@@ -69,7 +38,7 @@ if selected_tab == "Age":
         p2.quad(bottom=0, top='Age', left='left', right='right', source=source2, fill_color='green', line_color='white', alpha=0.5)
         st.bokeh_chart(p2, use_container_width=True)
 
-elif selected_tab == "Height":
+elif selected_tab == "Height of athletes before & after filling null cell":
     st.write("Histogram based on Height before the fill null cell and after it:")
     col1, col2 = st.columns(2)
     with col1:
@@ -90,7 +59,7 @@ elif selected_tab == "Height":
         p4.quad(bottom=0, top='Height', left='left', right='right', source=source4, fill_color='green', line_color='white', alpha=0.5)
         st.bokeh_chart(p4, use_container_width=True)
 
-elif selected_tab == "Weight":
+elif selected_tab == "Weight of athletes before & after filling null cell":
     st.write("Histogram based on Weight before the fill null cell and after it:")
     col1, col2 = st.columns(2)
     with col1:
@@ -111,8 +80,8 @@ elif selected_tab == "Weight":
         p6.quad(bottom=0, top='Weight', left='left', right='right', source=source6, fill_color='green', line_color='white', alpha=0.5)
         st.bokeh_chart(p6, use_container_width=True)
 
-elif selected_tab == "Sport":
-    st.write("Histogram based on athletes who win gold medal that over 50 base on sport:")
+elif selected_tab == "Sports whose athletes win gold medal & over 50 years old":
+    st.write("Histogram based on sport that athletes who win gold medal that over 50 base on sport:")
     # Filter athletes older than 50
     GoldMedal = athlete_df.loc[athlete_df['Medal'] == 1]
     filtered_df = GoldMedal[GoldMedal['Age'] > 50]
@@ -133,3 +102,100 @@ elif selected_tab == "Sport":
     )
     p.xaxis.major_label_orientation = "vertical"
     st.bokeh_chart(p, use_container_width=True)
+
+elif selected_tab == "Top 10 countries by number of medals":
+    st.write("Histogram of top 10 countries by number of medals:")
+    # Filter athletes older than 50
+    Medals = athlete_df.loc[athlete_df['Medal'] != 0]
+    country_counts = Medals['Country'].value_counts().head(10)
+    p = figure(
+        title='Top 10 countries by number of medals',
+        x_axis_label='Countries',
+        y_axis_label='Number of Medals',
+        x_range=list(country_counts.index),  # Set x-axis range to sports
+        plot_height=400, 
+        plot_width=700
+    )
+    p.vbar(
+        x=list(country_counts.index), 
+        top=country_counts.values, 
+        width=0.5,
+        fill_color='purple',
+        line_color='pink'
+    )
+    p.xaxis.major_label_orientation = "vertical"
+    st.bokeh_chart(p, use_container_width=True)
+
+elif selected_tab == "Top 15 countries by number of women medalist":
+    st.write("Histogram of top 15 countries by number of woman medals:")
+    # Filter athletes older than 50
+    Medals = athlete_df.loc[athlete_df['Medal'] != 0]
+    MedalsWoman = Medals.loc[Medals['Sex'] == 'F']
+    countryMedalsWoman_counts = MedalsWoman['Country'].value_counts().head(15)
+    p = figure(
+        title='Top 15 countries by women medalist',
+        x_axis_label='Countries',
+        y_axis_label='Number of Medals',
+        x_range=list(countryMedalsWoman_counts.index),  # Set x-axis range to sports
+        plot_height=400, 
+        plot_width=700
+    )
+    p.vbar(
+        x=list(countryMedalsWoman_counts.index), 
+        top=countryMedalsWoman_counts.values, 
+        width=0.5,
+        fill_color='red',
+        line_color='black'
+    )
+    p.xaxis.major_label_orientation = "vertical"
+    st.bokeh_chart(p, use_container_width=True)
+
+# elif selected_tab == "Gold Medals of Italy":
+#     st.write("Histogram of italian atheles who win gold medal:")
+#     GoldMedalItaly = athlete_df.loc[(athlete_df['Medal'] == '1') & (athlete_df['Country'] == 'Italy')]
+#     GoldMedalItaly_counts = GoldMedalItaly['Year'].value_counts()
+#     p = figure(
+#         title='Italian atheles who win gold medal',
+#         x_axis_label='Year',
+#         y_axis_label='Number of Italian Gold Medal',
+#         x_range=list(GoldMedalItaly_counts.index),  # Set x-axis range to sports
+#         plot_height=400, 
+#         plot_width=700
+#     )
+#     p.vbar(
+#         x=list(GoldMedalItaly_counts.index), 
+#         top=GoldMedalItaly_counts.values, 
+#         width=0.5,
+#         fill_color='green'
+#     )
+#     p.xaxis.major_label_orientation = "vertical"
+#     st.bokeh_chart(p, use_container_width=True)
+    
+elif selected_tab == "Gold Medals of Italy":
+    st.write("Histogram of Italian athletes who win gold medal:")
+    GoldMedal = athlete_df.loc[(athlete_df['Medal'] == 1)]
+    GoldMedalItaly = GoldMedal.loc[(GoldMedal['Country'] == 'Italy')]
+    GoldMedalItaly_counts = GoldMedalItaly['Year'].value_counts()
+    # Convert index to strings
+    Year = [str(year) for year in GoldMedalItaly_counts.index]
+    p = figure(
+        title='Italian athletes who win gold medal',
+        x_axis_label='Year',
+        y_axis_label='Number of Italian Gold Medals',
+        x_range=Year,  # Set x-axis range to years
+        plot_height=400, 
+        plot_width=700
+    )
+    p.vbar(
+        x=Year, 
+        top=GoldMedalItaly_counts.values, 
+        width=0.5,
+        fill_color='green'
+    )
+    p.xaxis.major_label_orientation = "vertical"
+    st.bokeh_chart(p, use_container_width=True)
+    
+
+    
+
+

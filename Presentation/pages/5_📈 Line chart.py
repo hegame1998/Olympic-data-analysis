@@ -1,40 +1,13 @@
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import streamlit as st
+from loadData import pd, np, sns, plt, st, athlete_df
 
 st.set_page_config(
         page_title="📈 Line chart",
         layout="wide",
     )
-
 st.subheader("📈 Line chart")
 st.text('Please select one item to see the line chart of athletes who won medal.')
-
-
-# datasets
-athlete_df = pd.read_csv('https://raw.githubusercontent.com/MaH1996SdN/programming_project/master/athlete_events.csv')
-regions_df = pd.read_csv('https://raw.githubusercontent.com/MaH1996SdN/programming_project/master/noc_regions.csv')
-
-# drop & merge
-regions_df.drop('notes', axis=1, inplace=True)
-athlete_df=pd.merge(athlete_df, regions_df, on='NOC', how='left')
-athlete_df.rename(columns = {'region':'Country'}, inplace = True)
-athlete_df.drop(['ID','Team', 'NOC', 'Games', 'City'], axis=1, inplace=True)
-
-# cleaning 
-athlete_df['Medal'].fillna('non-Medal', inplace = True)
-athlete_df.Medal.replace({'Gold':1, 'Silver':2, 'Bronze':3, 'non-Medal':0}, inplace=True)
-athlete_df['Country'].fillna('Unknown-Country', inplace = True)
-
-# filling null values 
-athlete_df['Age'].fillna(athlete_df['Age'].mean(), inplace = True)
-athlete_df['Height'].fillna(athlete_df['Height'].mean(), inplace=True)
-athlete_df['Weight'].fillna(athlete_df['Weight'].mean(), inplace=True)
-
-
-
+ 
+ 
 # Assuming athlete_df is your DataFrame containing athlete data
 # Prepare Data
 Medals = athlete_df.loc[athlete_df['Medal'] != 0]
