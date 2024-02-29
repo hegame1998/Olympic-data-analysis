@@ -22,16 +22,18 @@ with col1:
     st.radio(
         "Select one item:",
         key="display_option",
-        options=["Correlation", "Heatmap"],
+        options=["Correlation Matrix", "Heatmap"],
     )
 
 with col2:
-    if st.session_state.display_option == "Correlation":
+    if st.session_state.display_option == "Correlation Matrix":
         st.write("Correlation of data:")
         st.write(correlation_matrix)
     elif st.session_state.display_option == "Heatmap":
         st.write("Heatmap of data:")
         sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
         st.pyplot(fig)
+    
+
 
 
